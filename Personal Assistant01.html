@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        iframe {
+            border: none;
+            width: 350px;
+            height: 430px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to My Personal Assistant</h1>
+    <iframe
+        allow="microphone;"
+        id="dialogflowFrame"
+        src="https://console.dialogflow.com/api-client/demo/embedded/4e662413-79be-49fd-9c92-e2b70778787a">
+    </iframe>
+
+    <script>
+        var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+
+        recognition.onresult = function(event) {
+            var transcript = event.results[event.results.length - 1][0].transcript.trim().toLowerCase();
+            console.log('You said: ', transcript);
+
+            if (transcript === "hey via") {
+                startAssistant();
+            }
+        };
+
+        recognition.start();
+
+        function startAssistant() {
+            console.log("Wake word detected, starting assistant...");
+            var iframe = document.getElementById('dialogflowFrame');
+            iframe.contentWindow.postMessage('start', '*');
+        }
+    </script>
+</body>
+</html>
